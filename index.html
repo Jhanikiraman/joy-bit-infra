@@ -1,46 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Joy Bit Infra</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Joy Bit Infra | Cloud & DevOps</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header class="hero">
-    <h1>☁ Joy Bit Infra</h1>
-    <p>Building Scalable Cloud & DevOps Solutions</p>
-    <button onclick="showMessage()">Explore Our Cloud</button>
-  </header>
+<div id="particles"></div>
 
-  <section class="services">
+<header class="hero reveal">
+    <h1>☁ Joy Bit Infra</h1>
+    <p>Secure • Scalable • Automated Cloud Solutions</p>
+    <button class="btn" onclick="showMessage()">Explore Our Cloud</button>
+</header>
+
+<section class="services reveal">
     <h2>🚀 Our Expertise</h2>
     <div class="cards">
-      <div class="card">
-        <h3>AWS Architecture</h3>
-        <p>Secure and scalable cloud infrastructure using best practices.</p>
-      </div>
-      <div class="card">
-        <h3>CI/CD Automation</h3>
-        <p>Automated pipelines with CodePipeline & CloudFormation.</p>
-      </div>
-      <div class="card">
-        <h3>DevOps Engineering</h3>
-        <p>Infrastructure as Code with Terraform & CloudFormation.</p>
-      </div>
+        <div class="card">
+            <h3>AWS Architecture</h3>
+            <p>Secure & scalable cloud infrastructure design.</p>
+        </div>
+        <div class="card">
+            <h3>CI/CD Automation</h3>
+            <p>Automated deployments with CodePipeline.</p>
+        </div>
+        <div class="card">
+            <h3>DevOps Engineering</h3>
+            <p>Infrastructure as Code & Serverless solutions.</p>
+        </div>
     </div>
-  </section>
+</section>
 
-  <section class="cta">
-    <h2>🌍 Deploy. Scale. Innovate.</h2>
-    <p id="dynamicText"></p>
-  </section>
+<section class="pricing reveal">
+    <h2>💰 Pricing Plans</h2>
+    <div class="cards">
+        <div class="card">
+            <h3>Starter</h3>
+            <p>$99 / month</p>
+            <p>Basic Cloud Setup</p>
+        </div>
+        <div class="card highlight">
+            <h3>Professional</h3>
+            <p>$299 / month</p>
+            <p>Full CI/CD & Monitoring</p>
+        </div>
+        <div class="card">
+            <h3>Enterprise</h3>
+            <p>Custom Pricing</p>
+            <p>Advanced Architecture & Security</p>
+        </div>
+    </div>
+</section>
 
-  <footer>
-    <p>© 2026 Joy Bit Infra | Powered by AWS CloudFront</p>
-  </footer>
+<section class="contact reveal">
+    <h2>📩 Contact Us</h2>
+    <form onsubmit="submitForm(event)">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea placeholder="Your Message" required></textarea>
+        <button class="btn">Send Message</button>
+    </form>
+    <p id="formMessage"></p>
+</section>
 
-  <script src="script.js"></script>
+<footer>
+    © 2026 Joy Bit Infra | Powered by AWS CloudFront
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
