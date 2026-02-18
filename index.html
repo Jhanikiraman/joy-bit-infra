@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Joy Bit 5</title>
+    <title>Joy Bit Infra | Cloud Excellence</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="style.css">
@@ -11,66 +11,101 @@
 
 <div id="particles"></div>
 
+<!-- HERO SECTION -->
 <header class="hero reveal">
-    <h1>☁Joy Bit cloud </h1>
-    <h1>Joy Bit Infra - Version 2</h1>
-    <p>Secure • Scale • Automated </p>
-    <button class="btn" onclick="showMessage()">Explore Our Cloud</button>
+    <h1>☁ Joy Bit Infra</h1>
+    <h2>Engineering The Future of Cloud</h2>
+    <p>Secure • Scalable • Fully Automated</p>
+
+    <div class="hero-buttons">
+        <button class="btn primary" onclick="showMessage()">🚀 Explore Cloud</button>
+        <button class="btn secondary">📞 Get Consultation</button>
+    </div>
 </header>
 
+<!-- SERVICES -->
 <section class="services reveal">
-    <h2>🚀 Our Expertise</h2>
+    <h2>🚀 What We Build</h2>
     <div class="cards">
         <div class="card">
-            <h3>AWS Architectures</h3>
-            <p>Secure & scalable cloud infrastructure design.</p>
+            <h3>☁ AWS Architecture</h3>
+            <p>Highly secure, production-ready, scalable cloud infrastructure designed with AWS best practices.</p>
         </div>
         <div class="card">
-            <h3>CI/CD Automation</h3>
-            <p>Automated deployments with CodePipeline and code build.</p>
+            <h3>⚙ CI/CD Automation</h3>
+            <p>Fully automated deployments using CodePipeline, CodeBuild & CloudFormation.</p>
         </div>
         <div class="card">
-            <h3>DevOps Engineering</h3>
-            <p>Infrastructure as Code & Serverless solutions.</p>
+            <h3>🔐 DevSecOps</h3>
+            <p>Security-first DevOps with WAF, IAM least privilege & monitoring integration.</p>
         </div>
     </div>
 </section>
 
+<!-- WHY CHOOSE US -->
+<section class="highlight-section reveal">
+    <h2>🌍 Why Joy Bit Infra?</h2>
+    <p>
+        We transform traditional infrastructure into intelligent, automated, and secure cloud environments.
+        From startups to enterprises — we build systems that scale with your ambition.
+    </p>
+</section>
+
+<!-- PRICING -->
 <section class="pricing reveal">
-    <h2>💰 Pricing Plans</h2>
+    <h2>💼 Flexible Plans</h2>
     <div class="cards">
         <div class="card">
             <h3>Starter</h3>
-            <p>100000000 / month</p>
-            <p>Basic Cloud Setup</p>
+            <p class="price">$99 / month</p>
+            <ul>
+                <li>Basic AWS Setup</li>
+                <li>1 Environment</li>
+                <li>Email Support</li>
+            </ul>
         </div>
+
         <div class="card highlight">
             <h3>Professional</h3>
-            <p>$50000000 / month</p>
-            <p>Full CI/CD & Monitoring</p>
+            <p class="price">$499 / month</p>
+            <ul>
+                <li>Full CI/CD Automation</li>
+                <li>Monitoring & Alerts</li>
+                <li>CloudFront + WAF</li>
+            </ul>
         </div>
+
         <div class="card">
             <h3>Enterprise</h3>
-            <p>Custom Pricing</p>
-            <p>Advanced Architecture & Security</p>
+            <p class="price">Custom</p>
+            <ul>
+                <li>Advanced Architecture</li>
+                <li>High Availability Design</li>
+                <li>24/7 Dedicated Support</li>
+            </ul>
         </div>
     </div>
 </section>
 
+<!-- CONTACT -->
 <section class="contact reveal">
-    <h2>📩 Contact Us</h2>
+    <h2>📩 Let's Build Together</h2>
+    <p>Have a cloud idea? Let’s make it production-ready.</p>
+
     <form onsubmit="submitForm(event)">
         <input type="text" placeholder="Your Name" required>
         <input type="email" placeholder="Your Email" required>
-        <textarea placeholder="Your Message" required></textarea>
-        <button class="btn">Send Message</button>
+        <textarea placeholder="Tell us about your project..." required></textarea>
+        <button class="btn primary">Send Message</button>
     </form>
+
     <p id="formMessage"></p>
 </section>
 
+<!-- FOOTER -->
 <footer>
-    © 2026 Joy Bit Infra | Powered by percision infomatic
-    
+    <p>© 2026 Joy Bit Infra | Designed for Cloud Excellence</p>
+    <p class="tagline">Built with ❤️ using AWS & DevOps Automation</p>
 </footer>
 
 <script src="script.js"></script>
