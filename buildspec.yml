@@ -1,10 +1,16 @@
 version: 0.2
 
 phases:
+  install:
+    commands:
+      - echo Installing dependencies...
+
   build:
     commands:
-      - echo "Deploying to S3..."
-      - aws s3 sync . s3://joybitinfra-static-prod-070014264251-us-west-1 --delete
+      - echo Deploying to S3...
+      - aws s3 sync . s3://oybitinfra-static-prod-070014264251-us-west-1 --delete
+      - echo Creating CloudFront Invalidation...
+      - aws cloudfront create-invalidation --distribution-id $E1I6ML6Z6CLW3Z --paths "/*"
 
 artifacts:
   files:
