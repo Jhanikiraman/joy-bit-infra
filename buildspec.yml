@@ -1,0 +1,11 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - echo "Deploying to S3..."
+      - aws s3 sync . s3://$joybitinfra-static-prod-070014264251-us-west-1 --delete
+
+artifacts:
+  files:
+    - '**/*'
