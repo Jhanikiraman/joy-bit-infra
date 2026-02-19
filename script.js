@@ -1,23 +1,20 @@
-function showMessage() {
-    alert("🚀 Successfully deployed via AWS CodePipeline!");
-}
+const texts = ["AWS Architecture", "DevSecOps Automation", "CI/CD Excellence"];
+let count = 0;
+let index = 0;
+let currentText = '';
+let letter = '';
 
-function submitForm(event) {
-    event.preventDefault();
-    document.getElementById("formMessage").innerHTML =
-        "✅ Message submitted successfully!";
-}
+(function type() {
+    if (count === texts.length) {
+        count = 0;
+    }
+    currentText = texts[count];
+    letter = currentText.slice(0, ++index);
 
-// Scroll Reveal Animation
-window.addEventListener("scroll", function () {
-    let reveals = document.querySelectorAll(".reveal");
-
-    reveals.forEach(function (element) {
-        let windowHeight = window.innerHeight;
-        let elementTop = element.getBoundingClientRect().top;
-
-        if (elementTop < windowHeight - 100) {
-            element.classList.add("active");
-        }
-    });
-});
+    document.querySelector('.typing').textContent = letter;
+    if (letter.length === currentText.length) {
+        count++;
+        index = 0;
+    }
+    setTimeout(type, 120);
+})();
