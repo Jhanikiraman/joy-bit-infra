@@ -9,23 +9,28 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #00c6ff);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    background: #0f2027;
     color: white;
     overflow-x: hidden;
+    transition: 0.4s;
 }
 
-@keyframes gradientBG {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
+body.light {
+    background: #f4f4f4;
+    color: #111;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
 
 nav {
     position: fixed;
     width: 100%;
-    padding: 20px 50px;
+    padding: 15px 40px;
     display: flex;
     justify-content: space-between;
     backdrop-filter: blur(10px);
@@ -33,16 +38,11 @@ nav {
     z-index: 1000;
 }
 
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 20px;
-}
-
-nav a {
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
+nav button {
+    padding: 6px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
 }
 
 .hero {
@@ -54,15 +54,6 @@ nav a {
     flex-direction: column;
 }
 
-.hero h1 {
-    font-size: 3.5rem;
-}
-
-.hero h2 {
-    color: #00e0ff;
-    height: 40px;
-}
-
 .btn {
     padding: 12px 25px;
     border-radius: 30px;
@@ -70,7 +61,6 @@ nav a {
     cursor: pointer;
     margin: 10px;
     font-weight: bold;
-    transition: 0.3s;
 }
 
 .primary {
@@ -78,201 +68,199 @@ nav a {
     color: black;
 }
 
-.primary:hover {
-    transform: scale(1.1);
-}
-
-.glass {
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: white;
-}
-
 section {
     padding: 100px 20px;
     text-align: center;
 }
 
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-}
-
-.card {
-    width: 300px;
-    padding: 30px;
-    border-radius: 20px;
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(15px);
-    transition: 0.4s;
-}
-
-.card:hover {
-    transform: translateY(-10px);
-    background: rgba(0, 224, 255, 0.2);
-}
-
-.price {
-    font-size: 1.5rem;
-    color: #00e0ff;
-}
-
-.stats {
+.architecture {
     display: flex;
     justify-content: center;
-    gap: 60px;
+    gap: 40px;
     flex-wrap: wrap;
 }
 
-.stat h3 {
-    font-size: 2.5rem;
-    color: #00e0ff;
+.arch-box {
+    padding: 20px 40px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.1);
+    animation: float 3s ease-in-out infinite;
 }
 
-.cta {
-    background: rgba(0,0,0,0.4);
-    padding: 80px 20px;
+@keyframes float {
+    0% { transform: translateY(0px);}
+    50% { transform: translateY(-15px);}
+    100% { transform: translateY(0px);}
 }
 
-footer {
-    text-align: center;
-    padding: 30px;
-    background: rgba(0,0,0,0.6);
+/* Chatbot */
+.chatbot {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 280px;
+    background: #111;
+    border-radius: 15px;
+    padding: 15px;
+    display: none;
 }
 
-input, textarea {
-    width: 80%;
-    max-width: 500px;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 10px;
+.chatbot-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.chatbot input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
     border: none;
 }
 
-textarea {
-    height: 120px;
+/* Payment Modal */
+.modal {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
 }
 
-@media(max-width:768px){
-    .cards {flex-direction: column; align-items:center;}
-    .stats {flex-direction: column;}
+.modal-content {
+    background:white;
+    color:black;
+    padding:30px;
+    border-radius:15px;
+    width:300px;
+    text-align:center;
 }
+
 </style>
 </head>
 
 <body>
 
+<canvas id="particles"></canvas>
+
 <nav>
     <div>☁ Joy Bit Infra</div>
-    <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Services</a></li>
-        <li><a href="#">Pricing</a></li>
-        <li><a href="#">Contact</a></li>
-    </ul>
+    <div>
+        <button onclick="toggleMode()">🌙 Toggle Mode</button>
+        <button onclick="openChat()">🤖 AI Chat</button>
+    </div>
 </nav>
 
 <div class="hero">
     <h1>Build. Automate. Scale.</h1>
     <h2 id="typing"></h2>
-    <p>Enterprise-grade AWS architecture built for performance, security & automation.</p>
-    <div>
-        <button class="btn primary">🚀 Start Your Cloud Journey</button>
-        <button class="btn glass">📞 Book Strategy Call</button>
-    </div>
+    <button class="btn primary" onclick="openPayment()">💰 Start Plan</button>
 </div>
 
 <section>
-    <h2>🚀 What We Build</h2>
-    <div class="cards">
-        <div class="card">
-            <h3>☁ AWS Best Practices</h3>
-            <p>Secure, scalable, production-ready cloud infrastructure.</p>
-        </div>
-        <div class="card">
-            <h3>⚙ CI/CD Automation</h3>
-            <p>Automated deployments using CodePipeline & CodeBuild.</p>
-        </div>
-        <div class="card">
-            <h3>🔐 DevSecOps</h3>
-            <p>Security-first DevOps with WAF, IAM & Monitoring.</p>
-        </div>
+    <h2>📊 Animated AWS Architecture</h2>
+    <div class="architecture">
+        <div class="arch-box">🌐 CloudFront</div>
+        <div class="arch-box">🪣 S3</div>
+        <div class="arch-box">⚙ CodePipeline</div>
+        <div class="arch-box">🔐 WAF</div>
+        <div class="arch-box">📊 CloudWatch</div>
     </div>
 </section>
 
-<section class="stats">
-    <div class="stat">
-        <h3>99.99%</h3>
-        <p>Uptime Architecture</p>
-    </div>
-    <div class="stat">
-        <h3>100+</h3>
-        <p>Deployments Automated</p>
-    </div>
-    <div class="stat">
-        <h3>Zero</h3>
-        <p>Security Compromise</p>
-    </div>
-</section>
+<!-- Chatbot -->
+<div class="chatbot" id="chatbot">
+    <div class="chatbot-header">JoyBot 🤖</div>
+    <div id="chatMessages">Hi 👋 How can I help?</div>
+    <input type="text" placeholder="Ask about cloud..." onkeypress="chat(event)">
+</div>
 
-<section>
-    <h2>💼 Flexible Plans</h2>
-    <div class="cards">
-        <div class="card">
-            <h3>Starter</h3>
-            <p class="price">$99 / month</p>
-        </div>
-        <div class="card">
-            <h3>Professional</h3>
-            <p class="price">$499 / month</p>
-        </div>
-        <div class="card">
-            <h3>Enterprise</h3>
-            <p class="price">Custom</p>
-        </div>
+<!-- Payment Modal -->
+<div class="modal" id="paymentModal">
+    <div class="modal-content">
+        <h3>Demo Payment</h3>
+        <p>Simulated Stripe Checkout</p>
+        <button onclick="alert('Payment Successful 🚀')">Pay Now</button>
+        <br><br>
+        <button onclick="closePayment()">Close</button>
     </div>
-</section>
-
-<section>
-    <h2>📩 Let's Build Together</h2>
-    <form onsubmit="event.preventDefault(); alert('Message Sent Successfully 🚀');">
-        <input type="text" placeholder="Your Name" required><br>
-        <input type="email" placeholder="Your Email" required><br>
-        <textarea placeholder="Tell us about your project..." required></textarea><br>
-        <button class="btn primary">Send Message</button>
-    </form>
-</section>
-
-<section class="cta">
-    <h2>Ready to Transform Your Infrastructure?</h2>
-    <button class="btn primary">Let’s Build Now</button>
-</section>
-
-<footer>
-    <p>© 2026 Joy Bit Infra | Cloud. Code. Confidence.</p>
-</footer>
+</div>
 
 <script>
-const texts = ["AWS Architecture", "DevSecOps Automation", "CI/CD Excellence"];
-let count = 0;
-let index = 0;
-let currentText = '';
-let letter = '';
 
+/* Dark Mode */
+function toggleMode(){
+    document.body.classList.toggle("light");
+}
+
+/* Typing Animation */
+const texts = ["AWS Architecture", "DevSecOps Automation", "CI/CD Excellence"];
+let count=0,index=0,currentText='',letter='';
 (function type(){
-    if(count === texts.length){ count = 0; }
-    currentText = texts[count];
-    letter = currentText.slice(0, ++index);
-    document.getElementById('typing').textContent = letter;
-    if(letter.length === currentText.length){
-        count++;
-        index = 0;
-    }
-    setTimeout(type, 120);
+    if(count===texts.length){count=0;}
+    currentText=texts[count];
+    letter=currentText.slice(0,++index);
+    document.getElementById("typing").textContent=letter;
+    if(letter.length===currentText.length){count++;index=0;}
+    setTimeout(type,120);
 })();
+
+/* Chatbot */
+function openChat(){
+    let bot=document.getElementById("chatbot");
+    bot.style.display = bot.style.display==="block"?"none":"block";
+}
+
+function chat(e){
+    if(e.key==="Enter"){
+        let input=e.target.value;
+        let reply="We provide AWS, CI/CD & DevSecOps solutions 🚀";
+        document.getElementById("chatMessages").innerHTML+="<br><b>You:</b> "+input+"<br><b>JoyBot:</b> "+reply;
+        e.target.value="";
+    }
+}
+
+/* Payment */
+function openPayment(){
+    document.getElementById("paymentModal").style.display="flex";
+}
+function closePayment(){
+    document.getElementById("paymentModal").style.display="none";
+}
+
+/* Particle Background */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+let particlesArray=[];
+
+for(let i=0;i<100;i++){
+    particlesArray.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        size:Math.random()*3,
+        speedY:Math.random()*1
+    });
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="rgba(0,224,255,0.7)";
+    particlesArray.forEach(p=>{
+        p.y+=p.speedY;
+        if(p.y>canvas.height) p.y=0;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.fill();
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+
 </script>
 
 </body>
