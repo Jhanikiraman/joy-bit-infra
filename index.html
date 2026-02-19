@@ -1,7 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joy Bit Infra | Cloud Excellence</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #00c6ff);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: white;
+    overflow-x: hidden;
+}
+
+@keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+nav {
+    position: fixed;
+    width: 100%;
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    backdrop-filter: blur(10px);
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+}
+
+.hero {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+}
+
+.hero h2 {
+    color: #00e0ff;
+    height: 40px;
+}
+
+.btn {
+    padding: 12px 25px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.primary {
+    background: #00e0ff;
+    color: black;
+}
+
+.primary:hover {
+    transform: scale(1.1);
+}
+
+.glass {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+}
+
+section {
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.card {
+    width: 300px;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    transition: 0.4s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    background: rgba(0, 224, 255, 0.2);
+}
+
+.price {
+    font-size: 1.5rem;
+    color: #00e0ff;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+}
+
+.stat h3 {
+    font-size: 2.5rem;
+    color: #00e0ff;
+}
+
+.cta {
+    background: rgba(0,0,0,0.4);
+    padding: 80px 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    background: rgba(0,0,0,0.6);
+}
+
+input, textarea {
+    width: 80%;
+    max-width: 500px;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+}
+
+textarea {
+    height: 120px;
+}
+
+@media(max-width:768px){
+    .cards {flex-direction: column; align-items:center;}
+    .stats {flex-direction: column;}
+}
+</style>
+</head>
+
 <body>
 
-<nav class="navbar">
-    <div class="logo">☁ Joy Bit Infra</div>
+<nav>
+    <div>☁ Joy Bit Infra</div>
     <ul>
         <li><a href="#">Home</a></li>
         <li><a href="#">Services</a></li>
@@ -10,18 +175,33 @@
     </ul>
 </nav>
 
-<header class="hero">
-    <div class="hero-content">
-        <h1>Build. Automate. Scale.</h1>
-        <h2><span class="typing"></span></h2>
-        <p>Enterprise-grade AWS architecture built for performance, security & automation.</p>
+<div class="hero">
+    <h1>Build. Automate. Scale.</h1>
+    <h2 id="typing"></h2>
+    <p>Enterprise-grade AWS architecture built for performance, security & automation.</p>
+    <div>
+        <button class="btn primary">🚀 Start Your Cloud Journey</button>
+        <button class="btn glass">📞 Book Strategy Call</button>
+    </div>
+</div>
 
-        <div class="hero-buttons">
-            <button class="btn primary">🚀 Start Your Cloud Journey</button>
-            <button class="btn glass">📞 Book Strategy Call</button>
+<section>
+    <h2>🚀 What We Build</h2>
+    <div class="cards">
+        <div class="card">
+            <h3>☁ AWS Best Practices</h3>
+            <p>Secure, scalable, production-ready cloud infrastructure.</p>
+        </div>
+        <div class="card">
+            <h3>⚙ CI/CD Automation</h3>
+            <p>Automated deployments using CodePipeline & CodeBuild.</p>
+        </div>
+        <div class="card">
+            <h3>🔐 DevSecOps</h3>
+            <p>Security-first DevOps with WAF, IAM & Monitoring.</p>
         </div>
     </div>
-</header>
+</section>
 
 <section class="stats">
     <div class="stat">
@@ -38,6 +218,34 @@
     </div>
 </section>
 
+<section>
+    <h2>💼 Flexible Plans</h2>
+    <div class="cards">
+        <div class="card">
+            <h3>Starter</h3>
+            <p class="price">$99 / month</p>
+        </div>
+        <div class="card">
+            <h3>Professional</h3>
+            <p class="price">$499 / month</p>
+        </div>
+        <div class="card">
+            <h3>Enterprise</h3>
+            <p class="price">Custom</p>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>📩 Let's Build Together</h2>
+    <form onsubmit="event.preventDefault(); alert('Message Sent Successfully 🚀');">
+        <input type="text" placeholder="Your Name" required><br>
+        <input type="email" placeholder="Your Email" required><br>
+        <textarea placeholder="Tell us about your project..." required></textarea><br>
+        <button class="btn primary">Send Message</button>
+    </form>
+</section>
+
 <section class="cta">
     <h2>Ready to Transform Your Infrastructure?</h2>
     <button class="btn primary">Let’s Build Now</button>
@@ -47,5 +255,25 @@
     <p>© 2026 Joy Bit Infra | Cloud. Code. Confidence.</p>
 </footer>
 
-<script src="script.js"></script>
+<script>
+const texts = ["AWS Architecture", "DevSecOps Automation", "CI/CD Excellence"];
+let count = 0;
+let index = 0;
+let currentText = '';
+let letter = '';
+
+(function type(){
+    if(count === texts.length){ count = 0; }
+    currentText = texts[count];
+    letter = currentText.slice(0, ++index);
+    document.getElementById('typing').textContent = letter;
+    if(letter.length === currentText.length){
+        count++;
+        index = 0;
+    }
+    setTimeout(type, 120);
+})();
+</script>
+
 </body>
+</html>
