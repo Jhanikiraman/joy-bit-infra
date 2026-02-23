@@ -1,0 +1,129 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Joy Bit Infra - CloudFront Cache Invalidation Lambda Stack
+
+Parameters:
+  DistributionId:
+    Type: String
+    Description: CloudFront Distribution ID (Import from Infra stack)
+
+Resources:
+
+  ########################################
+  # IAM ROLE
+  ########################################
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: joybitinfra-lambda-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+
+              # CloudFront invalidation (least privilege)
+              - Effect: Allow
+                Action:
+                  - cloudfront:CreateInvalidation
+                Resource: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${DistributionId}"
+
+              # CodePipeline callback
+              - Effect: Allow
+                Action:
+                  - codepipeline:PutJobSuccessResult
+                  - codepipeline:PutJobFailureResult
+                Resource: "*"
+
+              # Logging
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+
+      Tags:
+        - Key: project
+          Value: joybitinfra
+        - Key: environment
+          Value: prod
+        - Key: owner
+          Value: jhanikiraman
+        - Key: managedby
+          Value: cloudformation
+
+  ########################################
+  # LAMBDA FUNCTION
+  ########################################
+
+  CacheInvalidationLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: joybitinfra-cache-invalidation
+      Runtime: python3.12
+      Handler: index.handler
+      Timeout: 60
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Environment:
+        Variables:
+          DISTRIBUTION_ID: !Ref DistributionId
+      Code:
+        ZipFile: |
+          import boto3
+          import os
+          import time
+
+          cloudfront = boto3.client('cloudfront')
+          codepipeline = boto3.client('codepipeline')
+
+          def handler(event, context):
+
+              job_id = event['CodePipeline.job']['id']
+              distribution_id = os.environ['DISTRIBUTION_ID']
+
+              try:
+                  cloudfront.create_invalidation(
+                      DistributionId=distribution_id,
+                      InvalidationBatch={
+                          'Paths': {
+                              'Quantity': 1,
+                              'Items': ['/*']
+                          },
+                          'CallerReference': str(time.time())
+                      }
+                  )
+
+                  codepipeline.put_job_success_result(jobId=job_id)
+
+              except Exception as e:
+                  codepipeline.put_job_failure_result(
+                      jobId=job_id,
+                      failureDetails={
+                          'message': str(e),
+                          'type': 'JobFailed'
+                      }
+                  )
+                  raise e
+
+      Tags:
+        - Key: project
+          Value: joybitinfra
+        - Key: environment
+          Value: prod
+        - Key: owner
+          Value: jhanikiraman
+        - Key: managedby
+          Value: cloudformation
+
+Outputs:
+  LambdaName:
+    Value: !Ref CacheInvalidationLambda
+    Export:
+      Name: joybitinfra-lambda-name
