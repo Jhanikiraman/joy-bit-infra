@@ -3,26 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Joy Bit Infra | Dark Universe</title>
+<title>Joy Bit Infra | Elite Cloud</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif;}
 body{
 background:#000;
-overflow:hidden;
 color:white;
-font-family:Inter,sans-serif;
+scroll-behavior:smooth;
 }
 
-/* Canvas background */
+/* ===== BACKGROUND ===== */
 canvas{
 position:fixed;
 top:0;
 left:0;
 z-index:-3;
 }
-
-/* Aurora Layer */
 .aurora{
 position:fixed;
 width:200%;
@@ -38,67 +35,233 @@ from{transform:translate(-10%,-10%) rotate(0deg);}
 to{transform:translate(10%,10%) rotate(5deg);}
 }
 
-/* Lightning Flash */
-.flash{
+/* ===== NAVBAR ===== */
+nav{
 position:fixed;
 width:100%;
-height:100%;
-background:white;
-opacity:0;
-z-index:-1;
-animation:flash 8s infinite;
-}
-@keyframes flash{
-0%,95%,100%{opacity:0;}
-96%{opacity:0.2;}
-97%{opacity:0;}
-98%{opacity:0.3;}
-99%{opacity:0;}
-}
-
-/* Hero Text */
-.hero{
-height:100vh;
 display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-text-align:center;
+justify-content:space-between;
+padding:20px 8%;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(15px);
+border-bottom:1px solid rgba(255,255,255,0.1);
+z-index:1000;
 }
-.hero h1{
-font-size:70px;
-background:linear-gradient(90deg,#00f5ff,#ff00ff,#00ff94);
+nav h1{
+background:linear-gradient(90deg,#00f5ff,#ff00ff);
 -webkit-background-clip:text;
 color:transparent;
-animation:glow 2s infinite alternate;
 }
-@keyframes glow{
-from{text-shadow:0 0 20px #00f5ff;}
-to{text-shadow:0 0 50px #ff00ff;}
+nav ul{
+display:flex;
+gap:25px;
+list-style:none;
+}
+nav ul li a{
+color:white;
+text-decoration:none;
+transition:0.3s;
+}
+nav ul li a:hover{
+color:#00f5ff;
 }
 
+/* ===== SECTIONS ===== */
+section{
+min-height:100vh;
+padding:120px 10%;
+text-align:center;
+}
+
+h2{
+font-size:45px;
+margin-bottom:30px;
+background:linear-gradient(90deg,#00f5ff,#00ff94,#ff00ff);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+/* ===== GLASS CARD ===== */
+.glass{
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,0.1);
+padding:30px;
+border-radius:20px;
+margin:20px auto;
+max-width:900px;
+}
+
+/* ===== SERVICES GRID ===== */
+.grid{
+display:flex;
+flex-wrap:wrap;
+gap:25px;
+justify-content:center;
+}
+.card{
+width:250px;
+padding:25px;
+border-radius:20px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.1);
+transition:0.4s;
+}
+.card:hover{
+transform:translateY(-10px);
+box-shadow:0 0 25px #00f5ff;
+}
+
+/* ===== STATUS WIDGET ===== */
+.status{
+display:flex;
+justify-content:center;
+gap:40px;
+margin-top:30px;
+}
+.region{
+padding:20px;
+border-radius:15px;
+background:rgba(255,255,255,0.05);
+}
+
+/* ===== METRICS ===== */
+.metric{
+margin:20px;
+}
+.bar{
+height:10px;
+background:#222;
+border-radius:20px;
+overflow:hidden;
+margin-top:10px;
+}
+.fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#00f5ff,#ff00ff);
+animation:load 3s forwards;
+}
+@keyframes load{
+to{width:90%;}
+}
+
+/* ===== CONTACT ===== */
+input,textarea{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#111;
+color:white;
+}
+button{
+margin-top:15px;
+padding:12px 30px;
+border:none;
+border-radius:25px;
+background:linear-gradient(90deg,#00f5ff,#ff00ff);
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+button:hover{
+box-shadow:0 0 20px #ff00ff;
+}
+
+footer{
+text-align:center;
+padding:40px;
+background:#000;
+color:#666;
+}
 </style>
 </head>
 <body>
 
 <canvas id="stars"></canvas>
 <div class="aurora"></div>
-<div class="flash"></div>
 
-<div class="hero">
-<h1>JOY BIT INFRA</h1>
-<p>Powering the Cloud Beyond Limits 🚀</p>
+<nav>
+<h1>Joy Bit Infra</h1>
+<ul>
+<li><a href="#home">Home</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#services">Services</a></li>
+<li><a href="#status">Status</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
+
+<section id="home">
+<h2>Cloud Intelligence at Global Scale</h2>
+<div class="glass">
+AI Powered • Multi-Region • Enterprise Grade Infrastructure
 </div>
+</section>
+
+<section id="about">
+<h2>About Joy Bit Infra</h2>
+<div class="glass">
+Built with a vision to scale cloud infrastructure beyond limits.
+Inspired by thinking big and executing bold.
+</div>
+</section>
+
+<section id="services">
+<h2>Our Services</h2>
+<div class="grid">
+<div class="card">DevOps Automation</div>
+<div class="card">CI/CD Pipelines</div>
+<div class="card">Cloud Monitoring</div>
+<div class="card">WAF & Security</div>
+</div>
+</section>
+
+<section id="status">
+<h2>Multi-Region Status</h2>
+<div class="status">
+<div class="region">California 🟢 Operational</div>
+<div class="region">N. Virginia 🟢 Operational</div>
+</div>
+</section>
+
+<section>
+<h2>Live Metrics</h2>
+<div class="metric">
+Infrastructure Health
+<div class="bar"><div class="fill"></div></div>
+</div>
+<div class="metric">
+Deployment Speed
+<div class="bar"><div class="fill"></div></div>
+</div>
+</section>
+
+<section id="contact">
+<h2>Contact Us</h2>
+<div class="glass">
+<input type="text" placeholder="Your Name">
+<input type="email" placeholder="Email">
+<textarea rows="4" placeholder="Message"></textarea>
+<button>Send Message</button>
+</div>
+</section>
+
+<footer>
+© 2026 Joy Bit Infra | Built in Chennai. Scaling Globally 🌍
+</footer>
 
 <script>
-/* Galaxy Particles */
+/* Galaxy Background */
 let canvas=document.getElementById("stars");
 let ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
 let stars=[];
-for(let i=0;i<400;i++){
+for(let i=0;i<300;i++){
 stars.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
@@ -106,7 +269,6 @@ r:Math.random()*2,
 speed:Math.random()*0.5
 });
 }
-
 function animate(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
 ctx.fillStyle="white";
@@ -120,12 +282,6 @@ if(s.y>canvas.height){s.y=0;}
 requestAnimationFrame(animate);
 }
 animate();
-
-/* Resize */
-window.addEventListener("resize",()=>{
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-});
 </script>
 
 </body>
