@@ -1,0 +1,215 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Joy Bit Infra - Stable CI/CD (us-west-1)
+
+Parameters:
+
+  ConnectionArn:
+    Type: String
+    Description: CodeStar Connection ARN (must be us-west-1)
+
+  BucketName:
+    Type: String
+    Description: Existing S3 website bucket name
+
+  CloudFrontDistributionId:
+    Type: String
+    Description: CloudFront Distribution ID
+
+  BranchName:
+    Type: String
+    Default: main
+
+  Environment:
+    Type: String
+    Default: prod
+
+Resources:
+
+################################################
+# PIPELINE ARTIFACT BUCKET
+################################################
+
+  PipelineArtifactBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Project
+          Value: JoyBitInfra
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Owner
+          Value: Jhanikiraman
+        - Key: ManagedBy
+          Value: CloudFormation
+
+################################################
+# CODEBUILD ROLE
+################################################
+
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: joybitinfra-codebuild-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      Policies:
+        - PolicyName: JoyBitInfraBuildPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                Resource: !Sub arn:aws:s3:::${PipelineArtifactBucket}/*
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !Sub arn:aws:s3:::${PipelineArtifactBucket}
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub arn:aws:s3:::${BucketName}/*
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !Sub arn:aws:s3:::${BucketName}
+              - Effect: Allow
+                Action:
+                  - cloudfront:CreateInvalidation
+                Resource: "*"
+      Tags:
+        - Key: Project
+          Value: JoyBitInfra
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Owner
+          Value: Jhanikiraman
+
+################################################
+# CODEBUILD PROJECT
+################################################
+
+  JoyBitInfraBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: joybitinfra-build
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:7.0
+        Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Name: BUCKET_NAME
+            Value: !Ref BucketName
+          - Name: DISTRIBUTION_ID
+            Value: !Ref CloudFrontDistributionId
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: buildspec.yml
+      Tags:
+        - Key: Project
+          Value: JoyBitInfra
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Owner
+          Value: Jhanikiraman 
+
+################################################
+# PIPELINE ROLE
+################################################
+
+  PipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: joybitinfra-pipeline-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: JoyBitInfraPipelinePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - codebuild:*
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - codestar-connections:UseConnection
+                Resource: !Ref ConnectionArn
+      Tags:
+        - Key: Project
+          Value: JoyBitInfra
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Owner
+          Value: Jhanikiraman
+
+################################################
+# CODEPIPELINE
+################################################
+
+  JoyBitInfraPipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn: !GetAtt PipelineRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref PipelineArtifactBucket
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: GitHubSource
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: CodeStarSourceConnection
+                Version: 1
+              OutputArtifacts:
+                - Name: SourceOutput
+              Configuration:
+                ConnectionArn: !Ref ConnectionArn
+                FullRepositoryId: Jhanikiraman/joy-bit-infra
+                BranchName: !Ref BranchName
+                DetectChanges: true
+        - Name: Build
+          Actions:
+            - Name: BuildAndDeploy
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: 1
+              InputArtifacts:
+                - Name: SourceOutput
+              Configuration:
+                ProjectName: !Ref JoyBitInfraBuildProject
+      Tags:
+        - Key: Project
+          Value: JoyBitInfra
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Owner
+          Value: Jhanikiraman
