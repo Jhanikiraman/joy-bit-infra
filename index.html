@@ -3,19 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Joy Bit Infra | Elite Cloud Systems</title>
+<title>Joy Bit Infra | Dark Universe</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
 body{
-background:#070716;
+background:#000;
+overflow:hidden;
 color:white;
-overflow-x:hidden;
+font-family:Inter,sans-serif;
 }
 
-/* Aurora Background */
-body::before{
-content:"";
+/* Canvas background */
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-3;
+}
+
+/* Aurora Layer */
+.aurora{
 position:fixed;
 width:200%;
 height:200%;
@@ -23,219 +31,102 @@ background:radial-gradient(circle at 20% 30%,#00f5ff33,transparent 40%),
 radial-gradient(circle at 80% 70%,#ff00ff33,transparent 40%),
 radial-gradient(circle at 50% 50%,#00ff9433,transparent 40%);
 animation:move 20s infinite alternate;
-z-index:-1;
+z-index:-2;
 }
 @keyframes move{
-from{transform:translate(-10%,-10%);}
-to{transform:translate(10%,10%);}
+from{transform:translate(-10%,-10%) rotate(0deg);}
+to{transform:translate(10%,10%) rotate(5deg);}
 }
 
-/* Navbar */
-nav{
-display:flex;
-justify-content:space-between;
-padding:20px 8%;
+/* Lightning Flash */
+.flash{
 position:fixed;
 width:100%;
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(15px);
-border-bottom:1px solid rgba(255,255,255,0.1);
-z-index:1000;
-}
-nav h1{
-background:linear-gradient(90deg,#00f5ff,#ff00ff);
--webkit-background-clip:text;
-color:transparent;
-}
-
-/* Sections */
-.section{
-padding:120px 8%;
-text-align:center;
-}
-
-/* Hero */
-.hero h2{
-font-size:60px;
-background:linear-gradient(90deg,#00f5ff,#00ff94,#ff00ff);
--webkit-background-clip:text;
-color:transparent;
-}
-.hero p{margin-top:20px;font-size:20px;opacity:0.8;}
-.hero button{
-margin-top:30px;
-padding:15px 40px;
-border:none;
-border-radius:30px;
-background:linear-gradient(90deg,#00f5ff,#ff00ff);
-color:white;
-cursor:pointer;
-transition:0.3s;
-}
-.hero button:hover{
-transform:scale(1.1);
-box-shadow:0 0 25px #ff00ff;
-}
-
-/* Dashboard Cards */
-.dashboard{
-display:flex;
-gap:30px;
-flex-wrap:wrap;
-justify-content:center;
-margin-top:60px;
-}
-.card{
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(15px);
-border:1px solid rgba(255,255,255,0.1);
-padding:30px;
-border-radius:20px;
-width:280px;
-transition:0.4s;
-}
-.card:hover{
-transform:translateY(-10px);
-box-shadow:0 0 25px #00f5ff;
-}
-.bar{
-height:8px;
-background:#222;
-border-radius:20px;
-margin-top:15px;
-overflow:hidden;
-}
-.fill{
 height:100%;
-background:linear-gradient(90deg,#00f5ff,#ff00ff);
-width:0%;
-animation:load 3s forwards;
+background:white;
+opacity:0;
+z-index:-1;
+animation:flash 8s infinite;
 }
-@keyframes load{
-to{width:90%;}
-}
-
-/* Client Logos */
-.marquee{
-overflow:hidden;
-white-space:nowrap;
-margin-top:40px;
-}
-.marquee span{
-display:inline-block;
-padding:0 40px;
-font-size:18px;
-animation:scroll 15s linear infinite;
-}
-@keyframes scroll{
-from{transform:translateX(100%);}
-to{transform:translateX(-100%);}
+@keyframes flash{
+0%,95%,100%{opacity:0;}
+96%{opacity:0.2;}
+97%{opacity:0;}
+98%{opacity:0.3;}
+99%{opacity:0;}
 }
 
-/* Founder */
-.founder{
+/* Hero Text */
+.hero{
+height:100vh;
 display:flex;
-flex-direction:column;
-align-items:center;
-gap:20px;
-margin-top:50px;
-}
-.founder img{
-width:150px;
-height:150px;
-border-radius:50%;
-border:3px solid #00f5ff;
-}
-
-/* Status */
-.status{
-display:flex;
-gap:40px;
 justify-content:center;
-margin-top:40px;
-}
-.region{
-background:rgba(255,255,255,0.05);
-padding:20px;
-border-radius:15px;
-}
-
-/* Footer */
-footer{
+align-items:center;
+flex-direction:column;
 text-align:center;
-padding:40px;
-color:#666;
-background:#000;
+}
+.hero h1{
+font-size:70px;
+background:linear-gradient(90deg,#00f5ff,#ff00ff,#00ff94);
+-webkit-background-clip:text;
+color:transparent;
+animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+from{text-shadow:0 0 20px #00f5ff;}
+to{text-shadow:0 0 50px #ff00ff;}
 }
 
 </style>
 </head>
 <body>
 
-<nav>
-<h1>Joy Bit Infra</h1>
-</nav>
+<canvas id="stars"></canvas>
+<div class="aurora"></div>
+<div class="flash"></div>
 
-<section class="section hero">
-<h2>Cloud Intelligence at Unicorn Scale</h2>
-<p>AI Powered • Multi-Region • Enterprise Ready</p>
-<button>Deploy Now 🚀</button>
-</section>
+<div class="hero">
+<h1>JOY BIT INFRA</h1>
+<p>Powering the Cloud Beyond Limits 🚀</p>
+</div>
 
-<section class="section">
-<h2>AI Cloud Dashboard</h2>
-<div class="dashboard">
-<div class="card">
-<h3>Infrastructure Health</h3>
-<div class="bar"><div class="fill"></div></div>
-</div>
-<div class="card">
-<h3>Deployment Speed</h3>
-<div class="bar"><div class="fill"></div></div>
-</div>
-<div class="card">
-<h3>Cost Optimization</h3>
-<div class="bar"><div class="fill"></div></div>
-</div>
-</div>
-</section>
+<script>
+/* Galaxy Particles */
+let canvas=document.getElementById("stars");
+let ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-<section class="section">
-<h2>Trusted By</h2>
-<div class="marquee">
-<span>AWS Partner</span>
-<span>DevOps Experts</span>
-<span>Cloud Innovators</span>
-<span>Startup Accelerators</span>
-<span>Enterprise Clients</span>
-</div>
-</section>
+let stars=[];
+for(let i=0;i<400;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2,
+speed:Math.random()*0.5
+});
+}
 
-<section class="section">
-<h2>Founder Vision</h2>
-<div class="founder">
-<img src="https://i.imgur.com/6VBx3io.png">
-<p>Inspired by thinking big and building bold. Joy Bit Infra is built to scale globally.</p>
-</div>
-</section>
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="white";
+stars.forEach(s=>{
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+ctx.fill();
+s.y+=s.speed;
+if(s.y>canvas.height){s.y=0;}
+});
+requestAnimationFrame(animate);
+}
+animate();
 
-<section class="section">
-<h2>Multi-Region Status</h2>
-<div class="status">
-<div class="region">
-<h3>California</h3>
-<p>Status: 🟢 Operational</p>
-</div>
-<div class="region">
-<h3>N. Virginia</h3>
-<p>Status: 🟢 Operational</p>
-</div>
-</div>
-</section>
-
-<footer>
-© 2026 Joy Bit Infra | Built in Chennai. Scaling Worldwide 🌍
-</footer>
+/* Resize */
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
+</script>
 
 </body>
 </html>
