@@ -1,0 +1,145 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Joy Bit Infra - Advanced Enterprise WAF (CloudFront)
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+
+Resources:
+
+###################################################
+# WAF WEB ACL
+###################################################
+
+  JoyBitWebACL:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      Name: !Sub joybitinfra-${Environment}-web-acl-v2
+      Scope: CLOUDFRONT
+      DefaultAction:
+        Allow: {}
+      VisibilityConfig:
+        SampledRequestsEnabled: true
+        CloudWatchMetricsEnabled: true
+        MetricName: joybitinfra-waf
+      Rules:
+
+        - Name: AWSManagedCommonRules
+          Priority: 1
+          OverrideAction: { None: {} }
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesCommonRuleSet
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: common-rules
+
+        - Name: AWSManagedSQLi
+          Priority: 2
+          OverrideAction: { None: {} }
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesSQLiRuleSet
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: sqli-protection
+
+        - Name: AWSManagedIPReputation
+          Priority: 3
+          OverrideAction: { None: {} }
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesAmazonIpReputationList
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: ip-reputation
+
+        - Name: RateLimitRule
+          Priority: 4
+          Action:
+            Block: {}
+          Statement:
+            RateBasedStatement:
+              Limit: 500
+              AggregateKeyType: IP
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: rate-limit
+
+      Tags:
+        - Key: Project
+          Value: JoyBitInfra
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Owner
+          Value: Jhanikiraman
+        - Key: ManagedBy
+          Value: CloudFormation
+        - Key: SecurityLayer
+          Value: WAF
+
+###################################################
+# CLOUDWATCH LOG GROUP
+###################################################
+
+  WAFLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub aws-waf-logs-joybitinfra-${Environment}
+      RetentionInDays: 30
+      Tags:
+        - Key: Project
+          Value: JoyBitInfra
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Owner
+          Value: Jhanikiraman
+        - Key: ManagedBy
+          Value: CloudFormation
+
+###################################################
+# LOG RESOURCE POLICY
+###################################################
+
+  WAFLogResourcePolicy:
+    Type: AWS::Logs::ResourcePolicy
+    Properties:
+      PolicyName: joybitinfra-waf-log-policy
+      PolicyDocument: !Sub |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AWSWAFLogsToCloudWatch",
+              "Effect": "Allow",
+              "Principal": { "Service": "waf.amazonaws.com" },
+              "Action": "logs:PutLogEvents",
+              "Resource": "${WAFLogGroup.Arn}"
+            }
+          ]
+        }
+
+###################################################
+# WAF LOGGING CONFIGURATION
+###################################################
+
+  WAFLoggingConfiguration:
+    Type: AWS::WAFv2::LoggingConfiguration
+    DependsOn: WAFLogResourcePolicy
+    Properties:
+      ResourceArn: !GetAtt JoyBitWebACL.Arn
+      LogDestinationConfigs:
+        - !GetAtt WAFLogGroup.Arn
+
+Outputs:
+  WebACLArn:
+    Description: ARN of WAF WebACL
+    Value: !GetAtt JoyBitWebACL.Arn
