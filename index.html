@@ -1,288 +1,1398 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Joy Bit Infra | Elite Cloud</title>
+<title>JoyBit Infra — Cloud That Sparks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&family=Cabinet+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif;}
-body{
-background:#000;
-color:white;
-scroll-behavior:smooth;
+/* ═══════════════════════════════════════════
+   ROOT + RESET
+═══════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --joy:    #FFE135;
+  --bit:    #0A0AFF;
+  --spark:  #FF3D3D;
+  --mint:   #00F5A0;
+  --ink:    #0A0A12;
+  --paper:  #F5F2EA;
+  --muted:  #8A8A9A;
+  --border: rgba(10,10,18,0.12);
+  --r:      6px;
+
+  --f-display: 'Syne', sans-serif;
+  --f-mono:    'Syne Mono', monospace;
+  --f-body:    'Cabinet Grotesk', sans-serif;
+
+  scroll-behavior: smooth;
 }
 
-/* ===== BACKGROUND ===== */
-canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:-3;
-}
-.aurora{
-position:fixed;
-width:200%;
-height:200%;
-background:radial-gradient(circle at 20% 30%,#00f5ff33,transparent 40%),
-radial-gradient(circle at 80% 70%,#ff00ff33,transparent 40%),
-radial-gradient(circle at 50% 50%,#00ff9433,transparent 40%);
-animation:move 20s infinite alternate;
-z-index:-2;
-}
-@keyframes move{
-from{transform:translate(-10%,-10%) rotate(0deg);}
-to{transform:translate(10%,10%) rotate(5deg);}
+html { font-size: 16px; }
+
+body {
+  font-family: var(--f-body);
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: hidden;
+  cursor: none;
 }
 
-/* ===== NAVBAR ===== */
-nav{
-position:fixed;
-width:100%;
-display:flex;
-justify-content:space-between;
-padding:20px 8%;
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(15px);
-border-bottom:1px solid rgba(255,255,255,0.1);
-z-index:1000;
+/* ═══════════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════════ */
+#cur {
+  position: fixed; z-index: 9999;
+  width: 14px; height: 14px;
+  background: var(--bit);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  transition: transform .1s, background .2s, width .2s, height .2s;
+  mix-blend-mode: multiply;
 }
-nav h1{
-background:linear-gradient(90deg,#00f5ff,#ff00ff);
--webkit-background-clip:text;
-color:transparent;
+#cur-trail {
+  position: fixed; z-index: 9998;
+  width: 36px; height: 36px;
+  border: 2px solid var(--bit);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  transition: left .12s cubic-bezier(.23,1,.32,1), top .12s cubic-bezier(.23,1,.32,1), width .2s, height .2s;
+  opacity: .5;
 }
-nav ul{
-display:flex;
-gap:25px;
-list-style:none;
+body:has(a:hover) #cur,
+body:has(button:hover) #cur { width:28px; height:28px; background:var(--joy); }
+body:has(a:hover) #cur-trail,
+body:has(button:hover) #cur-trail { width:60px; height:60px; }
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--bit); border-radius: 99px; }
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 48px;
+  background: rgba(245,242,234,.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 2px solid var(--border);
+  transition: padding .3s;
 }
-nav ul li a{
-color:white;
-text-decoration:none;
-transition:0.3s;
+nav.scrolled { padding: 14px 48px; box-shadow: 0 4px 32px rgba(0,0,0,.06); }
+
+.nav-logo {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -.02em;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 8px;
 }
-nav ul li a:hover{
-color:#00f5ff;
+.logo-dot {
+  width: 10px; height: 10px;
+  background: var(--joy);
+  border-radius: 50%;
+  display: inline-block;
+  animation: logoPulse 2s ease infinite;
+  box-shadow: 0 0 0 0 var(--joy);
+}
+@keyframes logoPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,225,53,.7); }
+  50% { box-shadow: 0 0 0 10px rgba(255,225,53,0); }
 }
 
-/* ===== SECTIONS ===== */
-section{
-min-height:100vh;
-padding:120px 10%;
-text-align:center;
+.nav-links {
+  display: flex; gap: 32px; list-style: none; align-items: center;
+}
+.nav-links a {
+  font-family: var(--f-display); font-weight: 600; font-size: 14px;
+  letter-spacing: .04em; text-decoration: none; color: var(--ink);
+  position: relative; padding-bottom: 2px;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom:0; left:0; width:0; height:2px;
+  background: var(--bit); transition: width .25s;
+}
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  background: var(--bit); color: var(--joy) !important;
+  padding: 10px 22px !important; border-radius: 99px;
+  transition: background .2s, transform .2s !important;
+}
+.nav-cta:hover { background: var(--ink) !important; transform: scale(1.05); }
+.nav-cta::after { display:none !important; }
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 120px 48px 80px;
 }
 
-h2{
-font-size:45px;
-margin-bottom:30px;
-background:linear-gradient(90deg,#00f5ff,#00ff94,#ff00ff);
--webkit-background-clip:text;
-color:transparent;
+#hero-canvas {
+  position: absolute; inset:0;
+  width:100%; height:100%;
+  opacity: .85;
 }
 
-/* ===== GLASS CARD ===== */
-.glass{
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(15px);
-border:1px solid rgba(255,255,255,0.1);
-padding:30px;
-border-radius:20px;
-margin:20px auto;
-max-width:900px;
+.hero-inner {
+  position: relative; z-index: 10;
+  max-width: 1100px; width: 100%;
+  display: grid; grid-template-columns: 1fr 420px; gap: 60px;
+  align-items: center;
 }
 
-/* ===== SERVICES GRID ===== */
-.grid{
-display:flex;
-flex-wrap:wrap;
-gap:25px;
-justify-content:center;
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--bit);
+  background: rgba(10,10,255,.08); border: 1px solid rgba(10,10,255,.2);
+  padding: 6px 14px; border-radius: 99px;
+  margin-bottom: 28px;
+  animation: fadeSlideUp .8s .1s both;
 }
-.card{
-width:250px;
-padding:25px;
-border-radius:20px;
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.1);
-transition:0.4s;
+.hero-tag-dot { width:6px;height:6px;border-radius:50%;background:var(--bit);animation:logoPulse 1.5s infinite; }
+
+.hero-h1 {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(52px, 6.5vw, 88px);
+  line-height: .92;
+  letter-spacing: -.03em;
+  color: var(--ink);
+  animation: fadeSlideUp .8s .2s both;
 }
-.card:hover{
-transform:translateY(-10px);
-box-shadow:0 0 25px #00f5ff;
+.hero-h1 em {
+  font-style: normal;
+  color: var(--bit);
+  position: relative;
+  display: inline-block;
+}
+.hero-h1 em::after {
+  content:'';
+  position: absolute; left:0; bottom: 4px; width:100%; height:8px;
+  background: var(--joy); z-index:-1;
+  transform: scaleX(0); transform-origin: left;
+  animation: underlineGrow .6s .9s cubic-bezier(.23,1,.32,1) forwards;
+}
+@keyframes underlineGrow { to { transform: scaleX(1); } }
+
+.hero-sub {
+  font-size: 18px; line-height: 1.65; color: #444;
+  max-width: 480px; margin-top: 24px;
+  animation: fadeSlideUp .8s .35s both;
 }
 
-/* ===== STATUS WIDGET ===== */
-.status{
-display:flex;
-justify-content:center;
-gap:40px;
-margin-top:30px;
-}
-.region{
-padding:20px;
-border-radius:15px;
-background:rgba(255,255,255,0.05);
+.hero-actions {
+  display: flex; gap: 16px; margin-top: 40px; flex-wrap: wrap;
+  animation: fadeSlideUp .8s .45s both;
 }
 
-/* ===== METRICS ===== */
-.metric{
-margin:20px;
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--bit); color: var(--joy);
+  font-family: var(--f-display); font-weight: 700; font-size: 15px;
+  letter-spacing: .02em; padding: 16px 32px; border-radius: 99px;
+  text-decoration: none; border: none; cursor: none;
+  transition: transform .2s, box-shadow .2s, background .2s;
+  box-shadow: 0 4px 24px rgba(10,10,255,.3);
 }
-.bar{
-height:10px;
-background:#222;
-border-radius:20px;
-overflow:hidden;
-margin-top:10px;
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(10,10,255,.4); background: #1a1aff; }
+.btn-primary svg { width:18px; height:18px; transition: transform .2s; }
+.btn-primary:hover svg { transform: translateX(4px); }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--ink);
+  font-family: var(--f-display); font-weight: 600; font-size: 15px;
+  padding: 16px 24px; border-radius: 99px; text-decoration: none;
+  border: 2px solid var(--border); transition: border-color .2s, color .2s;
+  cursor: none;
 }
-.fill{
-height:100%;
-width:0%;
-background:linear-gradient(90deg,#00f5ff,#ff00ff);
-animation:load 3s forwards;
+.btn-ghost:hover { border-color: var(--bit); color: var(--bit); }
+
+/* Hero card cluster */
+.hero-cards {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  animation: fadeSlideUp .8s .5s both;
 }
-@keyframes load{
-to{width:90%;}
+.h-card {
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 20px;
+  position: relative; overflow: hidden;
+  transition: transform .3s, box-shadow .3s;
+}
+.h-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,.1); }
+.h-card:nth-child(1) { grid-column: span 2; background: var(--ink); border-color: var(--ink); }
+.h-card:nth-child(3) { background: var(--joy); border-color: var(--joy); }
+
+.h-card-icon {
+  font-size: 28px; margin-bottom: 12px; display: block;
+}
+.h-card-title {
+  font-family: var(--f-display); font-weight: 700; font-size: 15px;
+  letter-spacing: -.01em; margin-bottom: 6px;
+}
+.h-card:nth-child(1) .h-card-title { color: var(--joy); }
+.h-card-val {
+  font-family: var(--f-mono); font-size: 28px; font-weight: bold;
+  letter-spacing: -.02em;
+}
+.h-card:nth-child(1) .h-card-val { color: white; }
+.h-card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.h-card:nth-child(1) .h-card-sub { color: rgba(255,255,255,.5); }
+
+.h-card-uptime {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-top: 10px;
+}
+.uptime-bar {
+  flex:1; height:6px; background: rgba(255,255,255,.15); border-radius:99px; overflow:hidden;
+}
+.uptime-fill {
+  height:100%; background:var(--mint); border-radius:99px;
+  width:0;
+  animation: fillBar 1.5s 1s ease forwards;
+}
+@keyframes fillBar { to { width:99.99%; } }
+
+.live-dot {
+  width:8px; height:8px; border-radius:50%; background:var(--mint);
+  animation: logoPulse 1.5s infinite;
 }
 
-/* ===== CONTACT ===== */
-input,textarea{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#111;
-color:white;
+/* ═══════════════════════════════════════════
+   MARQUEE STRIP
+═══════════════════════════════════════════ */
+.marquee-wrap {
+  background: var(--bit); overflow: hidden;
+  padding: 14px 0; border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink);
 }
-button{
-margin-top:15px;
-padding:12px 30px;
-border:none;
-border-radius:25px;
-background:linear-gradient(90deg,#00f5ff,#ff00ff);
-color:white;
-cursor:pointer;
-transition:0.3s;
+.marquee-track {
+  display: flex; gap: 0; white-space: nowrap;
+  animation: marqueeScroll 30s linear infinite;
 }
-button:hover{
-box-shadow:0 0 20px #ff00ff;
+.marquee-track span {
+  font-family: var(--f-display); font-weight: 700; font-size: 14px;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--joy);
+  padding: 0 40px; flex-shrink: 0;
+}
+.marquee-track .sep { color: rgba(255,225,53,.4); }
+@keyframes marqueeScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ═══════════════════════════════════════════
+   SECTION COMMONS
+═══════════════════════════════════════════ */
+section { padding: 120px 48px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+
+.section-eyebrow {
+  font-family: var(--f-mono); font-size: 11px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--bit); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-eyebrow::before {
+  content:''; display:block; width:32px; height:2px; background:var(--bit);
 }
 
-footer{
-text-align:center;
-padding:40px;
-background:#000;
-color:#666;
+.section-h2 {
+  font-family: var(--f-display); font-weight: 800;
+  font-size: clamp(38px, 5vw, 64px); line-height: .95;
+  letter-spacing: -.03em; color: var(--ink);
+}
+
+.section-h2 .accent { color: var(--bit); }
+.section-h2 .hi {
+  background: var(--joy); padding: 0 8px; display: inline;
+}
+
+/* ═══════════════════════════════════════════
+   FEATURES SECTION
+═══════════════════════════════════════════ */
+#features { background: var(--paper); }
+
+.features-head {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  align-items: end; margin-bottom: 80px;
+}
+.features-desc { font-size: 17px; line-height: 1.7; color: #555; }
+.features-desc strong { color: var(--ink); }
+
+.features-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+}
+
+.feat-card {
+  background: white; border: 2px solid var(--border); border-radius: 24px;
+  padding: 36px 30px; position: relative; overflow: hidden;
+  transition: transform .3s cubic-bezier(.23,1,.32,1), box-shadow .3s, border-color .3s;
+}
+.feat-card::before {
+  content:''; position:absolute; inset:0; opacity:0;
+  transition: opacity .3s;
+  border-radius: 22px;
+}
+.feat-card:hover { transform: translateY(-8px); box-shadow: 0 24px 64px rgba(0,0,0,.1); border-color: var(--bit); }
+.feat-card:hover::before { opacity:1; }
+
+.feat-card.yellow { background: var(--joy); border-color: var(--joy); }
+.feat-card.dark   { background: var(--ink); border-color: var(--ink); color: white; }
+.feat-card.dark .feat-sub { color: rgba(255,255,255,.55); }
+.feat-card.dark .feat-title { color: white; }
+
+.feat-icon-wrap {
+  width: 56px; height: 56px; border-radius: 16px;
+  display: grid; place-items: center; margin-bottom: 24px;
+  font-size: 26px;
+  background: rgba(10,10,255,.08);
+}
+.feat-card.dark .feat-icon-wrap { background: rgba(255,255,255,.1); }
+.feat-card.yellow .feat-icon-wrap { background: rgba(10,10,18,.1); }
+
+.feat-title {
+  font-family: var(--f-display); font-weight: 700; font-size: 20px;
+  letter-spacing: -.02em; margin-bottom: 12px; color: var(--ink);
+}
+.feat-sub { font-size: 14px; line-height: 1.65; color: #666; }
+
+.feat-tag {
+  display: inline-block; margin-top: 20px;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: .15em;
+  text-transform: uppercase; padding: 5px 12px;
+  border-radius: 99px; background: rgba(10,10,255,.07); color: var(--bit);
+}
+.feat-card.dark .feat-tag { background: rgba(255,255,255,.1); color: var(--mint); }
+.feat-card.yellow .feat-tag { background: rgba(10,10,18,.12); color: var(--ink); }
+
+/* ═══════════════════════════════════════════
+   NUMBERS SECTION
+═══════════════════════════════════════════ */
+#numbers {
+  background: var(--bit); overflow:hidden; position:relative;
+  padding: 80px 48px;
+}
+#numbers::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse 80% 80% at 60% 50%, rgba(255,225,53,.12), transparent);
+}
+.numbers-grid {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 2px;
+  position: relative; z-index:1;
+  border: 2px solid rgba(255,255,255,.1); border-radius: 24px; overflow:hidden;
+}
+.num-cell {
+  padding: 52px 40px;
+  border-right: 1px solid rgba(255,255,255,.1);
+  transition: background .3s;
+}
+.num-cell:last-child { border-right: none; }
+.num-cell:hover { background: rgba(255,255,255,.05); }
+
+.num-val {
+  font-family: var(--f-display); font-weight: 800;
+  font-size: clamp(44px, 5vw, 72px); line-height: 1;
+  letter-spacing: -.04em; color: var(--joy);
+  display: flex; align-items: baseline; gap: 4px;
+}
+.num-val sup { font-size: .45em; margin-bottom: .5em; }
+.num-label {
+  font-size: 14px; color: rgba(255,255,255,.55);
+  margin-top: 10px; font-weight: 500;
+  font-family: var(--f-body);
+}
+
+/* ═══════════════════════════════════════════
+   HOW IT WORKS
+═══════════════════════════════════════════ */
+#how { background: white; }
+
+.how-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+  align-items: center; margin-top: 70px;
+}
+
+.how-visual {
+  position: relative; aspect-ratio: 1;
+  display: grid; place-items: center;
+}
+
+#how-canvas { width:100%; height:100%; border-radius:32px; }
+
+.how-steps { display: flex; flex-direction: column; gap: 32px; }
+.how-step {
+  display: grid; grid-template-columns: 52px 1fr; gap: 20px; align-items: start;
+  opacity: 0; transform: translateX(30px);
+  transition: opacity .5s, transform .5s;
+}
+.how-step.visible { opacity:1; transform:translateX(0); }
+.how-step-num {
+  width: 52px; height:52px; border-radius: 14px;
+  background: var(--joy); display: grid; place-items: center;
+  font-family: var(--f-mono); font-size: 18px; font-weight: bold;
+  color: var(--ink); flex-shrink:0;
+}
+.how-step-title {
+  font-family: var(--f-display); font-weight: 700; font-size: 18px;
+  letter-spacing:-.01em; margin-bottom: 6px;
+}
+.how-step-desc { font-size: 14px; line-height: 1.65; color: #666; }
+
+/* ═══════════════════════════════════════════
+   PRICING
+═══════════════════════════════════════════ */
+#pricing { background: var(--paper); }
+
+.pricing-head { text-align:center; margin-bottom: 64px; }
+.pricing-head .section-eyebrow { justify-content: center; }
+.pricing-head .section-eyebrow::before { display:none; }
+
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+  max-width: 1100px; margin: 0 auto;
+}
+
+.price-card {
+  background: white; border: 2px solid var(--border); border-radius: 28px;
+  padding: 44px 36px; position: relative; overflow: hidden;
+  transition: transform .3s, box-shadow .3s;
+}
+.price-card:hover { transform: translateY(-8px); box-shadow: 0 32px 80px rgba(0,0,0,.12); }
+
+.price-card.featured {
+  background: var(--bit); border-color: var(--bit);
+  transform: scale(1.04);
+}
+.price-card.featured:hover { transform: scale(1.04) translateY(-8px); }
+
+.price-badge {
+  position: absolute; top: 20px; right: 20px;
+  background: var(--joy); color: var(--ink);
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: .15em;
+  text-transform: uppercase; padding: 5px 12px; border-radius: 99px;
+  font-weight: bold;
+}
+
+.price-tier {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--bit); margin-bottom: 16px;
+}
+.price-card.featured .price-tier { color: rgba(255,225,53,.7); }
+
+.price-amount {
+  font-family: var(--f-display); font-weight: 800;
+  font-size: 56px; line-height: 1; letter-spacing: -.04em;
+  color: var(--ink); display: flex; align-items: baseline; gap: 4px;
+}
+.price-card.featured .price-amount { color: var(--joy); }
+.price-amount sup { font-size: 22px; margin-bottom: 8px; }
+.price-amount span { font-size: 14px; font-weight: 400; color: var(--muted); font-family: var(--f-body); }
+.price-card.featured .price-amount span { color: rgba(255,225,53,.5); }
+
+.price-desc { font-size: 14px; color: #666; margin: 12px 0 28px; line-height:1.6; }
+.price-card.featured .price-desc { color: rgba(255,255,255,.55); }
+
+.price-divider { height:1px; background:var(--border); margin-bottom:24px; }
+.price-card.featured .price-divider { background: rgba(255,255,255,.15); }
+
+.price-features { list-style: none; display: flex; flex-direction:column; gap:12px; margin-bottom:36px; }
+.price-features li {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; color: #444;
+}
+.price-card.featured .price-features li { color: rgba(255,255,255,.85); }
+.price-features li::before {
+  content:'✓'; font-weight:800; color:var(--bit); flex-shrink:0; font-size:13px;
+}
+.price-card.featured .price-features li::before { color: var(--joy); }
+
+.price-btn {
+  width:100%; padding: 15px; border-radius: 99px;
+  font-family: var(--f-display); font-weight: 700; font-size: 15px;
+  cursor: none; border: 2px solid var(--bit); transition: all .2s;
+  background: transparent; color: var(--bit); letter-spacing:.02em;
+}
+.price-btn:hover { background: var(--bit); color: var(--joy); }
+.price-card.featured .price-btn {
+  background: var(--joy); color: var(--ink); border-color: var(--joy);
+}
+.price-card.featured .price-btn:hover { background: white; border-color: white; }
+
+/* ═══════════════════════════════════════════
+   TESTIMONIALS
+═══════════════════════════════════════════ */
+#testimonials { background: var(--ink); overflow:hidden; }
+#testimonials .section-eyebrow { color: var(--joy); }
+#testimonials .section-eyebrow::before { background: var(--joy); }
+#testimonials .section-h2 { color: white; }
+#testimonials .section-h2 .accent { color: var(--joy); }
+
+.testi-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+  margin-top: 64px;
+}
+.testi-card {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 24px; padding: 36px 30px;
+  transition: border-color .3s, transform .3s;
+}
+.testi-card:hover { border-color: rgba(255,225,53,.3); transform: translateY(-6px); }
+
+.testi-stars { font-size: 16px; margin-bottom: 18px; letter-spacing: 2px; }
+.testi-quote {
+  font-size: 16px; line-height: 1.7; color: rgba(255,255,255,.75);
+  font-style: italic; margin-bottom: 28px;
+}
+.testi-quote strong { color: var(--joy); font-style: normal; }
+.testi-author { display:flex; align-items:center; gap:14px; }
+.testi-avatar {
+  width:44px;height:44px;border-radius:50%;
+  display:grid;place-items:center;
+  font-family:var(--f-display);font-weight:800;font-size:16px;
+  flex-shrink:0;
+}
+.testi-name { font-family:var(--f-display);font-weight:700;font-size:15px;color:white; }
+.testi-role { font-size:12px;color:rgba(255,255,255,.4);margin-top:2px; }
+
+/* ═══════════════════════════════════════════
+   CTA SECTION
+═══════════════════════════════════════════ */
+#cta {
+  background: var(--joy); position:relative; overflow:hidden;
+  text-align: center; padding: 120px 48px;
+}
+#cta::before {
+  content:'JOYBIT'; position:absolute;
+  font-family:var(--f-display);font-weight:800;font-size:280px;letter-spacing:-.05em;
+  color:rgba(10,10,18,.06); white-space:nowrap;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none; line-height:1;
+}
+.cta-inner { position:relative; z-index:1; max-width:700px; margin:0 auto; }
+.cta-h2 {
+  font-family:var(--f-display);font-weight:800;
+  font-size:clamp(44px,6vw,80px);line-height:.92;
+  letter-spacing:-.04em;color:var(--ink);margin-bottom:24px;
+}
+.cta-sub { font-size:18px;color:rgba(10,10,18,.6);margin-bottom:40px; }
+.cta-actions { display:flex;gap:16px;justify-content:center;flex-wrap:wrap; }
+.btn-dark {
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--ink);color:var(--joy);
+  font-family:var(--f-display);font-weight:700;font-size:15px;
+  padding:16px 36px;border-radius:99px;text-decoration:none;
+  transition:transform .2s,box-shadow .2s; cursor:none;
+  box-shadow:0 8px 32px rgba(10,10,18,.3);
+}
+.btn-dark:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(10,10,18,.4);}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer {
+  background: var(--ink); padding: 72px 48px 40px;
+  border-top: 2px solid rgba(255,255,255,.06);
+}
+.footer-grid {
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;
+  margin-bottom:64px;
+}
+.footer-brand {}
+.footer-logo {
+  font-family:var(--f-display);font-weight:800;font-size:28px;
+  color:white;letter-spacing:-.02em;margin-bottom:16px;display:block;
+  text-decoration:none;
+}
+.footer-logo .jd { color:var(--joy); }
+.footer-tagline { font-size:14px;color:rgba(255,255,255,.4);line-height:1.7;max-width:260px; }
+.footer-social { display:flex;gap:12px;margin-top:24px; }
+.soc-btn {
+  width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.07);
+  display:grid;place-items:center;border:1px solid rgba(255,255,255,.1);
+  font-size:16px;text-decoration:none;transition:background .2s,transform .2s;
+  cursor:none;
+}
+.soc-btn:hover{background:var(--bit);transform:translateY(-3px);}
+
+.footer-col h4 {
+  font-family:var(--f-display);font-weight:700;font-size:13px;
+  letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);
+  margin-bottom:20px;
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:12px;}
+.footer-col ul a {
+  font-size:14px;color:rgba(255,255,255,.65);text-decoration:none;
+  transition:color .2s;
+}
+.footer-col ul a:hover{color:var(--joy);}
+
+.footer-bottom {
+  max-width:1100px;margin:0 auto;padding-top:32px;
+  border-top:1px solid rgba(255,255,255,.06);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+}
+.footer-copy{font-size:13px;color:rgba(255,255,255,.3);}
+.footer-legal{display:flex;gap:24px;}
+.footer-legal a{font-size:13px;color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s;}
+.footer-legal a:hover{color:white;}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════ */
+@keyframes fadeSlideUp {
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.reveal {
+  opacity:0; transform:translateY(32px);
+  transition:opacity .7s cubic-bezier(.23,1,.32,1), transform .7s cubic-bezier(.23,1,.32,1);
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE (basic)
+═══════════════════════════════════════════ */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;gap:40px;}
+  .features-grid{grid-template-columns:1fr 1fr;}
+  .pricing-grid{grid-template-columns:1fr;}
+  .price-card.featured{transform:none;}
+  .numbers-grid{grid-template-columns:1fr 1fr;}
+  .testi-grid{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .features-head{grid-template-columns:1fr;}
+  nav{padding:16px 24px;}
+  section{padding:80px 24px;}
+}
+@media(max-width:600px){
+  .nav-links{display:none;}
+  .hero-cards{grid-template-columns:1fr;}
+  .h-card:nth-child(1){grid-column:span 1;}
+  .numbers-grid{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
 <body>
 
-<canvas id="stars"></canvas>
-<div class="aurora"></div>
+<!-- Custom cursor -->
+<div id="cur"></div>
+<div id="cur-trail"></div>
 
-<nav>
-<h1>Joy Bit Infomatic</h1>
-<ul>
-<li><a href="#home">Home</a></li>
-<li><a href="#about">About</a></li>
-<li><a href="#services">Services</a></li>
-<li><a href="#status">status</a></li>
-<li><a href="#contact">Contact</a></li>
-</ul>
+<!-- ══════════ NAV ══════════ -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <span class="logo-dot"></span>JoyBit Infra
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#testimonials">Customers</a></li>
+    <li><a href="#cta" class="nav-cta">Start Free</a></li>
+  </ul>
 </nav>
 
-<section id="home">
-<h2>Cloud Intelligence at Global Scale</h2>
-<div class="glass">
-AI Powered • Multi-Region • Enterprise Grade Infrastructure
-</div>
+<!-- ══════════ HERO ══════════ -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag">
+        <span class="hero-tag-dot"></span>
+        Cloud Infrastructure Reimagined
+      </div>
+      <h1 class="hero-h1">
+        Cloud That<br><em>Sparks</em><br>Everything
+      </h1>
+      <p class="hero-sub">
+        JoyBit Infra delivers enterprise-grade cloud infrastructure with the speed of a startup and the joy of a product you actually love using.
+      </p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn-primary">
+          Deploy Now
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#how" class="btn-ghost">See How It Works</a>
+      </div>
+    </div>
+    <div class="hero-cards">
+      <!-- Card 1: Big uptime -->
+      <div class="h-card">
+        <span class="h-card-icon">🟢</span>
+        <div class="h-card-title">Global Uptime</div>
+        <div class="h-card-val">99.99%</div>
+        <div class="h-card-uptime">
+          <div class="live-dot"></div>
+          <div class="uptime-bar"><div class="uptime-fill"></div></div>
+          <span style="font-size:11px;color:rgba(255,255,255,.4);font-family:var(--f-mono)">LIVE</span>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="h-card">
+        <span class="h-card-icon">⚡</span>
+        <div class="h-card-title">Deploy Speed</div>
+        <div class="h-card-val">0.8s</div>
+        <div class="h-card-sub">avg cold start</div>
+      </div>
+      <!-- Card 3: Yellow -->
+      <div class="h-card">
+        <span class="h-card-icon">🌍</span>
+        <div class="h-card-title">Regions</div>
+        <div class="h-card-val">38</div>
+        <div class="h-card-sub">edge nodes globally</div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section id="about">
-<h2>About Joy Bit Infra</h2>
-<div class="glass">
-Built with a vision to scale cloud infrastructure beyond limits.
-Inspired by thinking big and executing bold.
+<!-- ══════════ MARQUEE ══════════ -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>Edge Computing</span><span class="sep">✦</span>
+    <span>Auto-Scaling</span><span class="sep">✦</span>
+    <span>Zero Downtime</span><span class="sep">✦</span>
+    <span>Global CDN</span><span class="sep">✦</span>
+    <span>DDoS Protection</span><span class="sep">✦</span>
+    <span>99.99% SLA</span><span class="sep">✦</span>
+    <span>One-Click Deploy</span><span class="sep">✦</span>
+    <span>Real-Time Logs</span><span class="sep">✦</span>
+    <span>AI Infra</span><span class="sep">✦</span>
+    <span>Serverless</span><span class="sep">✦</span>
+    <span>Kubernetes Native</span><span class="sep">✦</span>
+    <!-- Duplicate for seamless loop -->
+    <span>Edge Computing</span><span class="sep">✦</span>
+    <span>Auto-Scaling</span><span class="sep">✦</span>
+    <span>Zero Downtime</span><span class="sep">✦</span>
+    <span>Global CDN</span><span class="sep">✦</span>
+    <span>DDoS Protection</span><span class="sep">✦</span>
+    <span>99.99% SLA</span><span class="sep">✦</span>
+    <span>One-Click Deploy</span><span class="sep">✦</span>
+    <span>Real-Time Logs</span><span class="sep">✦</span>
+    <span>AI Infra</span><span class="sep">✦</span>
+    <span>Serverless</span><span class="sep">✦</span>
+    <span>Kubernetes Native</span><span class="sep">✦</span>
+  </div>
 </div>
+
+<!-- ══════════ FEATURES ══════════ -->
+<section id="features">
+  <div class="section-inner">
+    <div class="features-head">
+      <div>
+        <div class="section-eyebrow reveal">Why JoyBit</div>
+        <h2 class="section-h2 reveal">Infrastructure<br>that <span class="hi">just works</span></h2>
+      </div>
+      <p class="features-desc reveal">
+        We built JoyBit for engineers who are tired of <strong>fighting their cloud provider.</strong> Every feature is designed around reducing friction, eliminating toil, and making you faster.
+      </p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card reveal">
+        <div class="feat-icon-wrap">🚀</div>
+        <div class="feat-title">One-Click Deploy</div>
+        <div class="feat-sub">Push to git, we handle the rest. Automatic builds, blue-green deployments, and instant rollbacks. No YAML required.</div>
+        <span class="feat-tag">Zero Config</span>
+      </div>
+      <div class="feat-card yellow reveal">
+        <div class="feat-icon-wrap">🌐</div>
+        <div class="feat-title">Global Edge Network</div>
+        <div class="feat-sub">38 PoPs across 6 continents. Your code runs milliseconds away from your users, always. Smart routing included.</div>
+        <span class="feat-tag">38 Regions</span>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon-wrap">🛡️</div>
+        <div class="feat-title">Security by Default</div>
+        <div class="feat-sub">DDoS protection, WAF, auto-SSL, secret management, SOC2 Type II. Security isn't an add-on — it's the foundation.</div>
+        <span class="feat-tag">SOC2 Compliant</span>
+      </div>
+      <div class="feat-card dark reveal">
+        <div class="feat-icon-wrap">📈</div>
+        <div class="feat-title">Auto-Scale in Seconds</div>
+        <div class="feat-sub">Traffic spike? JoyBit scales before you even notice. Predictive scaling powered by ML, paying only for what you use.</div>
+        <span class="feat-tag">ML-Powered</span>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon-wrap">🔍</div>
+        <div class="feat-title">Real-Time Observability</div>
+        <div class="feat-sub">Logs, traces, and metrics unified in a single dashboard. Correlate incidents in seconds, not hours.</div>
+        <span class="feat-tag">Full-Stack Traces</span>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon-wrap">🤖</div>
+        <div class="feat-title">AI-Ready Infrastructure</div>
+        <div class="feat-sub">GPU clusters, vector DB hosting, model serving endpoints. Build and ship AI products without the headache.</div>
+        <span class="feat-tag">GPU Clusters</span>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section id="services">
-<h2>Our Services</h2>
-<div class="grid">
-<div class="card">DevOps Automation</div>
-<div class="card">CI/CD Pipelines</div>
-<div class="card">Cloud Monitoring</div>
-<div class="card">WAF & Security</div>
-</div>
+<!-- ══════════ NUMBERS ══════════ -->
+<section id="numbers">
+  <div class="numbers-grid">
+    <div class="num-cell reveal">
+      <div class="num-val"><sup>$</sup><span id="n1">0</span>M</div>
+      <div class="num-label">Processed in deployments monthly</div>
+    </div>
+    <div class="num-cell reveal">
+      <div class="num-val"><span id="n2">0</span>K<sup>+</sup></div>
+      <div class="num-label">Active teams building on JoyBit</div>
+    </div>
+    <div class="num-cell reveal">
+      <div class="num-val"><span id="n3">0</span>B</div>
+      <div class="num-label">API requests served per month</div>
+    </div>
+    <div class="num-cell reveal">
+      <div class="num-val"><span id="n4">0</span>ms</div>
+      <div class="num-label">Median global response time</div>
+    </div>
+  </div>
 </section>
 
-<section id="status">
-<h2>Multi-Region Status</h2>
-<div class="status">
-<div class="region">California 🟢 Operational</div>
-<div class="region">N. Virginia 🟢 Operational</div>
-</div>
+<!-- ══════════ HOW IT WORKS ══════════ -->
+<section id="how">
+  <div class="section-inner">
+    <div class="section-eyebrow reveal">Process</div>
+    <h2 class="section-h2 reveal">From zero to <span class="accent">global</span><br>in four steps</h2>
+    <div class="how-grid">
+      <div class="how-visual reveal">
+        <canvas id="how-canvas"></canvas>
+      </div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">01</div>
+          <div>
+            <div class="how-step-title">Connect Your Repository</div>
+            <div class="how-step-desc">Link GitHub, GitLab, or Bitbucket in seconds. We detect your framework and pre-configure everything automatically.</div>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">02</div>
+          <div>
+            <div class="how-step-title">Configure Environment</div>
+            <div class="how-step-desc">Set env vars, choose your region preferences, and define scaling rules. Or skip it — our defaults are production-ready.</div>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">03</div>
+          <div>
+            <div class="how-step-title">Deploy to the Edge</div>
+            <div class="how-step-desc">Push your code and watch it propagate to 38 global edge nodes in under 90 seconds. Get your custom domain instantly.</div>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">04</div>
+          <div>
+            <div class="how-step-title">Scale Without Thinking</div>
+            <div class="how-step-desc">Our AI predicts load spikes and scales your infra before they hit. You sleep, we guard. Billed per millisecond of actual usage.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section>
-<h2>Live Metrics</h2>
-<div class="metric">
-Infrastructure Health
-<div class="bar"><div class="fill"></div></div>
-</div>
-<div class="metric">
-Deployment Speed
-<div class="bar"><div class="fill"></div></div>
-</div>
+<!-- ══════════ PRICING ══════════ -->
+<section id="pricing">
+  <div class="pricing-head">
+    <div class="section-eyebrow reveal">Pricing</div>
+    <h2 class="section-h2 reveal">Start free.<br>Scale <span class="hi">without limits</span></h2>
+    <p class="features-desc reveal" style="text-align:center;max-width:480px;margin:16px auto 0">No surprise bills. No hidden costs. Pay only for what you actually use.</p>
+  </div>
+  <div class="pricing-grid">
+    <!-- Hobby -->
+    <div class="price-card reveal">
+      <div class="price-tier">Hobby</div>
+      <div class="price-amount"><sup>$</sup>0 <span>/mo</span></div>
+      <div class="price-desc">Perfect for side projects, experiments, and learning the platform.</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li>3 projects</li>
+        <li>1 region</li>
+        <li>100 GB bandwidth</li>
+        <li>Shared compute</li>
+        <li>Community support</li>
+      </ul>
+      <button class="price-btn">Get Started Free</button>
+    </div>
+    <!-- Pro: featured -->
+    <div class="price-card featured reveal">
+      <div class="price-badge">Most Popular</div>
+      <div class="price-tier">Pro</div>
+      <div class="price-amount"><sup>$</sup>49 <span>/mo</span></div>
+      <div class="price-desc">For professional teams shipping fast and needing real reliability.</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li>Unlimited projects</li>
+        <li>All 38 regions</li>
+        <li>2 TB bandwidth</li>
+        <li>Dedicated compute</li>
+        <li>Priority support (2hr SLA)</li>
+        <li>Custom domains + SSL</li>
+        <li>Advanced analytics</li>
+      </ul>
+      <button class="price-btn">Start Pro Trial</button>
+    </div>
+    <!-- Enterprise -->
+    <div class="price-card reveal">
+      <div class="price-tier">Enterprise</div>
+      <div class="price-amount" style="font-size:42px">Custom</div>
+      <div class="price-desc">For mission-critical workloads, compliance requirements, and dedicated SLAs.</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li>Everything in Pro</li>
+        <li>99.99% uptime SLA</li>
+        <li>Unlimited bandwidth</li>
+        <li>Dedicated infrastructure</li>
+        <li>White-glove onboarding</li>
+        <li>24/7 dedicated support</li>
+        <li>SOC2, HIPAA, GDPR</li>
+      </ul>
+      <button class="price-btn">Talk to Sales</button>
+    </div>
+  </div>
 </section>
 
-<section id="contact">
-<h2>Contact Us</h2>
-<div class="glass">
-<input type="text" placeholder="Your Name">
-<input type="email" placeholder="Email">
-<textarea rows="4" placeholder="Message"></textarea>
-<button>Send Message</button>
-</div>
+<!-- ══════════ TESTIMONIALS ══════════ -->
+<section id="testimonials">
+  <div class="section-inner">
+    <div class="section-eyebrow reveal">Customers</div>
+    <h2 class="section-h2 reveal">Loved by teams<br>who <span class="accent">ship fast</span></h2>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"We cut our infra costs by 60% and our deploy time from <strong>20 minutes to 45 seconds.</strong> JoyBit genuinely changed how we operate."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:var(--joy);color:var(--ink)">MK</div>
+          <div>
+            <div class="testi-name">Maya Krishnan</div>
+            <div class="testi-role">CTO, Streamline AI</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Finally, a cloud provider where the <strong>developer experience actually matters.</strong> Our engineers stopped complaining about infra and started shipping features."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:var(--bit);color:var(--joy)">JL</div>
+          <div>
+            <div class="testi-name">Jonas Lee</div>
+            <div class="testi-role">VP Engineering, Novablock</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"We handle <strong>3 billion requests/month</strong> on JoyBit. Not a single incident in 14 months. The auto-scaling is genuinely magic."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:var(--spark);color:white)">AR</div>
+          <div>
+            <div class="testi-name">Aisha Rowe</div>
+            <div class="testi-role">Head of Platform, QuantumPay</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- ══════════ CTA ══════════ -->
+<section id="cta">
+  <div class="cta-inner">
+    <h2 class="cta-h2 reveal">Ready to build<br>something joyful?</h2>
+    <p class="cta-sub reveal">Join 120,000+ developers who chose cloud that doesn't make them cry.</p>
+    <div class="cta-actions reveal">
+      <a href="#" class="btn-dark">
+        Deploy for Free
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#" class="btn-ghost" style="border-color:rgba(10,10,18,.3);color:var(--ink)">Talk to a Human</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
 <footer>
-© 2026 Joy Bit Infra | Built in Chennai. Scaling Globally 🌍
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="footer-logo"><span class="jd">Joy</span>Bit Infra</a>
+      <p class="footer-tagline">Cloud infrastructure that sparks creativity, ships fast, and sleeps soundly.</p>
+      <div class="footer-social">
+        <a href="#" class="soc-btn">𝕏</a>
+        <a href="#" class="soc-btn">in</a>
+        <a href="#" class="soc-btn">gh</a>
+        <a href="#" class="soc-btn">▶</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Changelog</a></li>
+        <li><a href="#">Roadmap</a></li>
+        <li><a href="#">Status</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Developers</h4>
+      <ul>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">API Reference</a></li>
+        <li><a href="#">CLI</a></li>
+        <li><a href="#">SDKs</a></li>
+        <li><a href="#">Open Source</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 JoyBit Infra, Inc. All rights reserved.</div>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Cookie Settings</a>
+    </div>
+  </div>
 </footer>
 
+<!-- ══════════ JAVASCRIPT ══════════ -->
 <script>
-/* Galaxy Background */
-let canvas=document.getElementById("stars");
-let ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+(function() {
 
-let stars=[];
-for(let i=0;i<300;i++){
-stars.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-r:Math.random()*2,
-speed:Math.random()*0.5
+/* ─── CURSOR ──────────────────────────────── */
+const cur = document.getElementById('cur');
+const trail = document.getElementById('cur-trail');
+let mx=0, my=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx+'px'; cur.style.top = my+'px';
+  trail.style.left = mx+'px'; trail.style.top = my+'px';
 });
-}
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.fillStyle="white";
-stars.forEach(s=>{
-ctx.beginPath();
-ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-ctx.fill();
-s.y+=s.speed;
-if(s.y>canvas.height){s.y=0;}
+
+/* ─── NAV SCROLL ─────────────────────────── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
 });
-requestAnimationFrame(animate);
+
+/* ─── REVEAL ON SCROLL ───────────────────── */
+const revealEls = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      revealObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+revealEls.forEach(el => revealObs.observe(el));
+
+/* ─── HOW-STEP REVEAL ────────────────────── */
+const steps = document.querySelectorAll('.how-step');
+const stepObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      stepObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+steps.forEach((el, i) => {
+  el.style.transitionDelay = (i * 0.12)+'s';
+  stepObs.observe(el);
+});
+
+/* ─── NUMBER COUNTER ─────────────────────── */
+function animateCounter(el, target, suffix='', duration=1800) {
+  const start = performance.now();
+  function frame(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(ease * target);
+    if (p < 1) requestAnimationFrame(frame);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(frame);
 }
-animate();
+
+const numObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounter(document.getElementById('n1'), 2.4);
+      animateCounter(document.getElementById('n2'), 120);
+      animateCounter(document.getElementById('n3'), 3);
+      animateCounter(document.getElementById('n4'), 12);
+      numObs.disconnect();
+    }
+  });
+}, { threshold: 0.5 });
+const numSection = document.getElementById('numbers');
+if (numSection) numObs.observe(numSection);
+
+/* ─── HERO CANVAS — particle cloud ──────── */
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, animId;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Nodes in a network topology
+  const NODE_COUNT = 70;
+  const nodes = [];
+  const palette = ['#0A0AFF','#FFE135','#FF3D3D','#00F5A0','#0A0AFF'];
+
+  for (let i = 0; i < NODE_COUNT; i++) {
+    nodes.push({
+      x: Math.random() * 1,  // normalized
+      y: Math.random() * 1,
+      vx: (Math.random()-.5) * .0003,
+      vy: (Math.random()-.5) * .0003,
+      r: Math.random() * 3 + 1,
+      col: palette[Math.floor(Math.random()*palette.length)],
+      pulse: Math.random() * Math.PI * 2,
+      pSpeed: Math.random() * .03 + .01,
+    });
+  }
+
+  let mouseNX = .5, mouseNY = .5;
+  document.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouseNX = (e.clientX - rect.left) / rect.width;
+    mouseNY = (e.clientY - rect.top) / rect.height;
+  });
+
+  function draw() {
+    animId = requestAnimationFrame(draw);
+    ctx.clearRect(0,0,W,H);
+
+    // Background gradient
+    const bg = ctx.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0, '#F0EDE4');
+    bg.addColorStop(1, '#E8E4D8');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+
+    // Update nodes
+    for (let n of nodes) {
+      n.x += n.vx; n.y += n.vy;
+      n.pulse += n.pSpeed;
+      // Bounce
+      if (n.x < 0 || n.x > 1) n.vx *= -1;
+      if (n.y < 0 || n.y > 1) n.vy *= -1;
+      n.x = Math.max(0, Math.min(1, n.x));
+      n.y = Math.max(0, Math.min(1, n.y));
+
+      // Mouse attraction
+      const dx = mouseNX - n.x;
+      const dy = mouseNY - n.y;
+      const d = Math.sqrt(dx*dx+dy*dy)+.001;
+      if (d < .25) {
+        n.vx += dx/d * .000015;
+        n.vy += dy/d * .000015;
+      }
+      // Speed cap
+      const spd = Math.sqrt(n.vx*n.vx+n.vy*n.vy);
+      if (spd > .001) { n.vx=n.vx/spd*.001; n.vy=n.vy/spd*.001; }
+    }
+
+    // Draw edges
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i+1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        const dx = (a.x-b.x)*W, dy = (a.y-b.y)*H;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < 130) {
+          const alpha = (1 - d/130) * .25;
+          ctx.strokeStyle = `rgba(10,10,255,${alpha})`;
+          ctx.lineWidth = (1 - d/130) * 1.2;
+          ctx.beginPath();
+          ctx.moveTo(a.x*W, a.y*H);
+          ctx.lineTo(b.x*W, b.y*H);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Draw nodes
+    for (let n of nodes) {
+      const px = n.x*W, py = n.y*H;
+      const pulse = Math.sin(n.pulse) * .4 + .6;
+      // Glow
+      const g = ctx.createRadialGradient(px,py,0, px,py, n.r*8*pulse);
+      g.addColorStop(0, n.col+'55');
+      g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(px,py, n.r*8*pulse,0,Math.PI*2);
+      ctx.fill();
+      // Core
+      ctx.fillStyle = n.col;
+      ctx.globalAlpha = .9;
+      ctx.beginPath();
+      ctx.arc(px,py, n.r,0,Math.PI*2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+  draw();
+})();
+
+/* ─── HOW CANVAS — animated topology ─────── */
+(function() {
+  const canvas = document.getElementById('how-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Cloud node system
+  const layers = [
+    { label: 'Git Push',   x:.15, y:.2, col:'#FFE135', icon:'📦' },
+    { label: 'Build',      x:.5,  y:.12, col:'#0A0AFF', icon:'⚙️' },
+    { label: 'Edge 1',     x:.85, y:.25, col:'#00F5A0', icon:'🌐' },
+    { label: 'CDN',        x:.85, y:.55, col:'#00F5A0', icon:'⚡' },
+    { label: 'Edge 2',     x:.85, y:.82, col:'#00F5A0', icon:'🌐' },
+    { label: 'Scale',      x:.5,  y:.88, col:'#FF3D3D', icon:'📈' },
+    { label: 'Monitor',    x:.15, y:.75, col:'#0A0AFF', icon:'🔍' },
+    { label: 'JoyBit',     x:.5,  y:.5,  col:'#FFE135', icon:'✦'  },
+  ];
+
+  const edges = [
+    [0,1],[1,7],[7,2],[7,3],[7,4],[7,5],[5,6],[6,7],[1,7]
+  ];
+
+  let t = 0;
+  // Packets travelling along edges
+  const packets = [];
+  for (let i=0;i<8;i++) {
+    const ei = Math.floor(Math.random()*edges.length);
+    packets.push({ edge: ei, progress: Math.random(), speed: .004+Math.random()*.006 });
+  }
+
+  function draw() {
+    requestAnimationFrame(draw);
+    t += .015;
+
+    if (!W) return;
+    ctx.clearRect(0,0,W,H);
+
+    // BG
+    ctx.fillStyle = '#F8F5EC';
+    ctx.fillRect(0,0,W,H);
+
+    // Grid dots
+    ctx.fillStyle = 'rgba(10,10,18,.06)';
+    for(let gx=0;gx<W;gx+=28)
+      for(let gy=0;gy<H;gy+=28){
+        ctx.beginPath();ctx.arc(gx,gy,1.5,0,Math.PI*2);ctx.fill();
+      }
+
+    // Edges
+    for (let [ai,bi] of edges) {
+      const a=layers[ai], b=layers[bi];
+      ctx.strokeStyle='rgba(10,10,255,.15)';
+      ctx.lineWidth=1.5;
+      ctx.setLineDash([6,6]);
+      ctx.lineDashOffset=-t*30;
+      ctx.beginPath();
+      ctx.moveTo(a.x*W, a.y*H);
+      ctx.lineTo(b.x*W, b.y*H);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Packets
+    for (let p of packets) {
+      p.progress += p.speed;
+      if (p.progress > 1) { p.progress=0; p.edge=Math.floor(Math.random()*edges.length); }
+      const [ai,bi] = edges[p.edge];
+      const a=layers[ai], b=layers[bi];
+      const px = (a.x + (b.x-a.x)*p.progress)*W;
+      const py = (a.y + (b.y-a.y)*p.progress)*H;
+      const g = ctx.createRadialGradient(px,py,0,px,py,8);
+      g.addColorStop(0,'rgba(10,10,255,.9)');
+      g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;
+      ctx.beginPath();ctx.arc(px,py,8,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#0A0AFF';
+      ctx.beginPath();ctx.arc(px,py,3,0,Math.PI*2);ctx.fill();
+    }
+
+    // Nodes
+    for (let n of layers) {
+      const px=n.x*W, py=n.y*H;
+      const pulse = Math.sin(t + n.x*10) * 4;
+      // Shadow
+      ctx.fillStyle = 'rgba(0,0,0,.08)';
+      ctx.beginPath(); ctx.ellipse(px,py+28+pulse*.3,22,8,0,0,Math.PI*2); ctx.fill();
+      // Outer ring
+      ctx.strokeStyle=n.col+'88'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(px,py,24+pulse,0,Math.PI*2); ctx.stroke();
+      // Circle
+      ctx.fillStyle=n.col;
+      ctx.beginPath(); ctx.arc(px,py,20,0,Math.PI*2); ctx.fill();
+      // Inner
+      ctx.fillStyle='rgba(255,255,255,.3)';
+      ctx.beginPath(); ctx.arc(px-5,py-5,8,0,Math.PI*2); ctx.fill();
+      // Label
+      ctx.fillStyle='rgba(10,10,18,.7)';
+      ctx.font=`bold 10px 'Syne Mono', monospace`;
+      ctx.textAlign='center';
+      ctx.fillText(n.label, px, py+40+pulse*.2);
+    }
+
+    ctx.textAlign='start';
+  }
+  draw();
+})();
+
+})();
 </script>
-
 </body>
 </html>
