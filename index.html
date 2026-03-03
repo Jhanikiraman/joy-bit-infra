@@ -33,6 +33,12 @@
 
 html { font-size: 16px; }
 
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
 body {
   font-family: var(--f-body);
   background: var(--paper);
@@ -635,7 +641,7 @@ footer {
 }
 .soc-btn:hover{background:var(--bit);transform:translateY(-3px);}
 
-.footer-col h4 {
+.footer-col h3 {
   font-family:var(--f-display);font-weight:700;font-size:13px;
   letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);
   margin-bottom:20px;
@@ -851,7 +857,8 @@ footer {
 </section>
 
 <!-- ══════════ NUMBERS ══════════ -->
-<section id="numbers">
+<section id="numbers" aria-labelledby="numbers-heading">
+  <h2 id="numbers-heading" class="sr-only">Our Numbers</h2>
   <div class="numbers-grid">
     <div class="num-cell reveal">
       <div class="num-val"><sup>$</sup><span id="n1">0</span>M</div>
@@ -1048,7 +1055,7 @@ footer {
       </div>
     </div>
     <div class="footer-col">
-      <h4>Product</h4>
+      <h3>Product</h3>
       <ul>
         <li><a href="#">Features</a></li>
         <li><a href="#">Pricing</a></li>
@@ -1058,7 +1065,7 @@ footer {
       </ul>
     </div>
     <div class="footer-col">
-      <h4>Developers</h4>
+      <h3>Developers</h3>
       <ul>
         <li><a href="#">Documentation</a></li>
         <li><a href="#">API Reference</a></li>
@@ -1068,7 +1075,7 @@ footer {
       </ul>
     </div>
     <div class="footer-col">
-      <h4>Company</h4>
+      <h3>Company</h3>
       <ul>
         <li><a href="#">About</a></li>
         <li><a href="#">Blog</a></li>
